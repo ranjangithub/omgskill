@@ -7,7 +7,7 @@ export async function POST(req: Request) {
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
-  upsertProfile({
+  await upsertProfile({
     userId,
     industry:       body.industry       ?? "technology-saas",
     role:           body.role           ?? "technology",
@@ -17,6 +17,6 @@ export async function POST(req: Request) {
     currentProjects: body.currentProjects || null,
     voicePreference: body.voicePreference ?? "analytical",
   });
-  markOnboarded(userId);
+  await markOnboarded(userId);
   return NextResponse.json({ ok: true });
 }

@@ -39,9 +39,9 @@ export async function POST(req: Request) {
       const priceId = sub.items.data[0]?.price.id ?? "";
       const tier = priceIdToTier(priceId);
 
-      const existing = getUser(clerkUserId);
-      if (!existing) upsertUser({ id: clerkUserId, email: "", stripeCustomerId: customerId, stripeSubscriptionId: subscriptionId });
-      setUserTier(clerkUserId, tier, { customerId, subscriptionId });
+      const existing = await getUser(clerkUserId);
+      if (!existing) await upsertUser({ id: clerkUserId, email: "", stripeCustomerId: customerId, stripeSubscriptionId: subscriptionId });
+      await setUserTier(clerkUserId, tier, { customerId, subscriptionId });
       break;
     }
 
@@ -55,7 +55,7 @@ export async function POST(req: Request) {
 
       const priceId = sub.items.data[0]?.price.id ?? "";
       const tier: PricingTier = sub.status === "active" ? priceIdToTier(priceId) : "free";
-      setUserTier(clerkUserId, tier, { customerId, subscriptionId: sub.id });
+      await setUserTier(clerkUserId, tier, { customerId, subscriptionId: sub.id });
       break;
     }
 
@@ -63,7 +63,7 @@ export async function POST(req: Request) {
       const sub = event.data.object as Stripe.Subscription;
       const clerkUserId = sub.metadata?.clerkUserId;
       if (!clerkUserId) break;
-      setUserTier(clerkUserId, "free");
+      await setUserTier(clerkUserId, "free");
       break;
     }
   }

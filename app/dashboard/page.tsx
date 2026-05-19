@@ -9,10 +9,10 @@ export default async function DashboardPage() {
   const { userId } = await auth();
   if (!userId) redirect("/sign-in");
 
-  const dbUser = getUser(userId);
+  const dbUser = await getUser(userId);
   if (!dbUser?.onboarded) redirect("/onboarding");
 
-  const profile = getProfile(userId);
+  const profile = await getProfile(userId);
   const today = new Date().toISOString().split("T")[0];
   const personaKey = profile
     ? buildPersonaKey(profile.industry, profile.role, profile.contentGoals)

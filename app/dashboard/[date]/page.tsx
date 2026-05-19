@@ -13,11 +13,11 @@ export default async function ArchiveDayPage({ params }: Props) {
   const { userId } = await auth();
   if (!userId) redirect("/sign-in");
 
-  const dbUser = getUser(userId);
+  const dbUser = await getUser(userId);
   if (!dbUser?.onboarded) redirect("/onboarding");
 
   const tier = dbUser?.tier ?? "free";
-  const profile = getProfile(userId);
+  const profile = await getProfile(userId);
   const personaKey = profile
     ? buildPersonaKey(profile.industry, profile.role, profile.contentGoals)
     : "default";

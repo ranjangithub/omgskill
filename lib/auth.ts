@@ -7,7 +7,7 @@ export async function getAuthUser(): Promise<{ clerkUser: Awaited<ReturnType<typ
   if (!clerkUser) return { clerkUser: null, dbUser: null };
 
   const email = clerkUser.emailAddresses[0]?.emailAddress ?? "";
-  const dbUser = upsertUser({ id: clerkUser.id, email });
+  const dbUser = await upsertUser({ id: clerkUser.id, email });
 
   return { clerkUser, dbUser };
 }

@@ -9,10 +9,10 @@ export default async function ResumePage() {
   const { userId } = await auth();
   if (!userId) redirect("/sign-in");
 
-  const dbUser = getUser(userId);
+  const dbUser = await getUser(userId);
   if (!dbUser?.onboarded) redirect("/onboarding");
 
-  const profile = getProfile(userId);
+  const profile = await getProfile(userId);
   const tier = dbUser.tier ?? "free";
 
   const industryLabel = INDUSTRIES.find((i) => i.id === profile?.industry)?.label ?? "Your Industry";

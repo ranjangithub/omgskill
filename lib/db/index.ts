@@ -1,42 +1,42 @@
 import type { UserRecord, SubscriberProfile, BriefingRecord, PricingTier } from "./schema";
 import { readBriefing, writeBriefing, listBriefingDatesForPersona, findBriefingForIndustry } from "@/lib/briefing-store";
 import {
-  fsGetUser, fsUpsertUser, fsSetUserTier, fsMarkOnboarded,
-  fsGetProfile, fsUpsertProfile,
-} from "./file-store";
+  clerkGetUser, clerkUpsertUser, clerkSetUserTier, clerkMarkOnboarded,
+  clerkGetProfile, clerkUpsertProfile,
+} from "./clerk-store";
 
-// ── Users (file-backed, survives dev server restarts) ────────────
+// ── Users (Clerk metadata-backed) ────────────────────────────────
 
-export function upsertUser(data: Partial<UserRecord> & { id: string; email: string }): UserRecord {
-  return fsUpsertUser(data);
+export async function upsertUser(data: Partial<UserRecord> & { id: string; email: string }): Promise<UserRecord> {
+  return clerkUpsertUser(data);
 }
 
-export function getUser(userId: string): UserRecord | null {
-  return fsGetUser(userId);
+export async function getUser(userId: string): Promise<UserRecord | null> {
+  return clerkGetUser(userId);
 }
 
-export function setUserTier(
+export async function setUserTier(
   userId: string,
   tier: PricingTier,
   stripeData?: { customerId?: string; subscriptionId?: string }
-) {
-  fsSetUserTier(userId, tier, stripeData);
+): Promise<void> {
+  return clerkSetUserTier(userId, tier, stripeData);
 }
 
-export function markOnboarded(userId: string) {
-  fsMarkOnboarded(userId);
+export async function markOnboarded(userId: string): Promise<void> {
+  return clerkMarkOnboarded(userId);
 }
 
-// ── Subscriber Profiles (file-backed) ───────────────────────────
+// ── Subscriber Profiles (Clerk metadata-backed) ──────────────────
 
-export function upsertProfile(
+export async function upsertProfile(
   data: Partial<SubscriberProfile> & { userId: string }
-): SubscriberProfile {
-  return fsUpsertProfile(data);
+): Promise<SubscriberProfile> {
+  return clerkUpsertProfile(data);
 }
 
-export function getProfile(userId: string): SubscriberProfile | null {
-  return fsGetProfile(userId);
+export async function getProfile(userId: string): Promise<SubscriberProfile | null> {
+  return clerkGetProfile(userId);
 }
 
 // ── Briefings (file-backed via lib/briefing-store.ts) ───────────

@@ -12,7 +12,7 @@ export default async function PendingPage() {
   const { userId } = await auth();
   if (!userId) redirect("/sign-in");
 
-  const dbUser = getUser(userId);
+  const dbUser = await getUser(userId);
   if (!dbUser?.onboarded) redirect("/onboarding");
 
   if (!isSuperuser(userId)) redirect("/dashboard/admin");

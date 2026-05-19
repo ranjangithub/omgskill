@@ -7,7 +7,7 @@ export async function POST() {
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const dbUser = getUser(userId);
+  const dbUser = await getUser(userId);
   if (!dbUser?.stripeCustomerId) return NextResponse.json({ error: "No subscription found" }, { status: 404 });
 
   const session = await stripe.billingPortal.sessions.create({

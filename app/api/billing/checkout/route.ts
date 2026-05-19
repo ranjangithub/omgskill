@@ -15,13 +15,13 @@ export async function POST(req: Request) {
   const priceId = interval === "year" ? config.annualPriceId : config.monthlyPriceId;
   if (!priceId) return NextResponse.json({ error: "Stripe price not configured" }, { status: 500 });
 
-  const dbUser = getUser(userId);
+  const dbUser = await getUser(userId);
   let customerId = dbUser?.stripeCustomerId;
 
   if (!customerId) {
     const customer = await stripe.customers.create({ metadata: { clerkUserId: userId } });
     customerId = customer.id;
-    upsertUser({ id: userId, email: dbUser?.email ?? "", stripeCustomerId: customerId });
+    await upsertUser({ id: userId, email: dbUser?.email ?? "", stripeCustomerId: customerId });
   }
 
   const session = await stripe.checkout.sessions.create({

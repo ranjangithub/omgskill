@@ -10,8 +10,8 @@ export default async function SettingsPage() {
   if (!userId) redirect("/sign-in");
 
   const clerkUser = await currentUser();
-  const dbUser = getUser(userId);
-  const profile = getProfile(userId);
+  const dbUser = await getUser(userId);
+  const profile = await getProfile(userId);
   const tier = dbUser?.tier ?? "free";
 
   return (
