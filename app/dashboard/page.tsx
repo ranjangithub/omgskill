@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { getUser, getProfile, buildPersonaKey, getBriefing } from "@/lib/db";
 import { DashboardClient } from "@/components/dashboard-client";
-import { MOCK_BRIEFING } from "@/lib/mock-data";
+import { getMockBriefing } from "@/lib/mock-briefings";
 
 export default async function DashboardPage() {
   const { userId } = await auth();
@@ -17,7 +17,7 @@ export default async function DashboardPage() {
     ? buildPersonaKey(profile.industry, profile.role, profile.contentGoals)
     : "default";
 
-  const briefing = getBriefing(today, personaKey) ?? MOCK_BRIEFING;
+  const briefing = getBriefing(today, personaKey) ?? getMockBriefing(profile?.industry ?? "technology-saas");
   const tier = dbUser?.tier ?? "free";
 
   return (

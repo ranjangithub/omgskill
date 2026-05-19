@@ -6,11 +6,16 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "generate": "tsx scripts/generate.ts",
+    "generate:healthcare": "tsx scripts/generate.ts healthcare",
+    "generate:tech": "tsx scripts/generate.ts technology-saas",
+    "generate:finance": "tsx scripts/generate.ts banking-finance"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.96.0",
     "@clerk/nextjs": "^7.3.7",
+    "dotenv": "^17.4.2",
     "drizzle-kit": "^0.31.10",
     "drizzle-orm": "^0.45.2",
     "lucide-react": "^1.16.0",
@@ -28,6 +33,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
     "tailwindcss": "^4",
+    "tsx": "^4.22.2",
     "typescript": "^5"
   }
 }

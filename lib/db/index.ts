@@ -1,10 +1,11 @@
 import type { UserRecord, SubscriberProfile, BriefingRecord, PricingTier } from "./schema";
+import { readBriefing, writeBriefing, listBriefingDatesForPersona } from "@/lib/briefing-store";
 
-// In-memory store for local dev — swap for Supabase/PostgreSQL in production
+// In-memory store for users + profiles (swap for Supabase/PostgreSQL in production)
+// Briefings use file-based storage via lib/briefing-store.ts
 
 const users    = new Map<string, UserRecord>();
 const profiles = new Map<string, SubscriberProfile>();
-const briefings = new Map<string, BriefingRecord>(); // key: `${date}:${personaKey}`
 
 // ── Users ──────────────────────────────────────────────────────
 
@@ -77,22 +78,18 @@ export function getProfile(userId: string): SubscriberProfile | null {
   return profiles.get(userId) ?? null;
 }
 
-// ── Briefings ────────────────────────────────────────────────────
+// ── Briefings (file-backed via lib/briefing-store.ts) ───────────
 
 export function getBriefing(date: string, personaKey: string): BriefingRecord | null {
-  return briefings.get(`${date}:${personaKey}`) ?? null;
+  return readBriefing(date, personaKey);
 }
 
 export function saveBriefing(briefing: BriefingRecord): void {
-  briefings.set(`${briefing.date}:${briefing.personaKey}`, briefing);
+  writeBriefing(briefing);
 }
 
 export function listBriefingDates(personaKey: string): string[] {
-  return Array.from(briefings.keys())
-    .filter((k) => k.endsWith(`:${personaKey}`))
-    .map((k) => k.split(":")[0])
-    .sort()
-    .reverse();
+  return listBriefingDatesForPersona(personaKey);
 }
 
 // ── Persona key ───────────────────────────────────────────────────
