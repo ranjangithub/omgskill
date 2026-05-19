@@ -59,7 +59,7 @@ export default async function HomePage() {
             omgskill.ai delivers 10 curated AI signals every morning — filtered through 20 years of enterprise AI architecture judgment. Not keyword matching. Expert curation, personalized to your role, industry, and how you think.
           </p>
           <div className="flex flex-wrap gap-4">
-            <Link href="/sign-up" className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-7 py-3.5 text-base font-bold text-white hover:bg-indigo-500 transition-colors">
+            <Link href="/start" className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-7 py-3.5 text-base font-bold text-white hover:bg-indigo-500 transition-colors">
               Start free — no card required <ArrowRight className="h-4 w-4" />
             </Link>
             <Link href="/pricing" className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/8 px-7 py-3.5 text-base font-bold text-white hover:bg-white/15 transition-colors">
@@ -111,7 +111,7 @@ export default async function HomePage() {
             <div className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-[2px]">
               <div className="text-center">
                 <p className="mb-3 text-sm font-semibold text-slate-700">Signals 4–10 unlocked with Pro</p>
-                <Link href="/sign-up" className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-indigo-500 transition-colors">
+                <Link href="/start" className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-indigo-500 transition-colors">
                   Unlock all 10 signals — $9/mo <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
@@ -205,7 +205,7 @@ export default async function HomePage() {
           <Clock className="mx-auto mb-6 h-12 w-12 text-indigo-400" />
           <h2 className="mb-5 text-4xl font-black">5 minutes tomorrow morning.<br />Know what changed in AI overnight.</h2>
           <p className="mb-8 text-lg text-slate-300">Join enterprise architects, AI PMs, consultants, and tech leaders who replaced 4 newsletters with one expert briefing.</p>
-          <Link href="/sign-up" className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-8 py-4 text-lg font-bold text-white hover:bg-indigo-500 transition-colors">
+          <Link href="/start" className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-8 py-4 text-lg font-bold text-white hover:bg-indigo-500 transition-colors">
             Start free today <ArrowRight className="h-5 w-5" />
           </Link>
           <p className="mt-4 text-sm text-slate-400">Free forever for top 3 signals · Pro $9/mo · Premium $29/mo</p>

@@ -41,7 +41,7 @@ export function MarketingNav() {
           ) : (
             <>
               <Link href="/sign-in" className="text-sm font-medium text-slate-600 hover:text-slate-900">Sign in</Link>
-              <Link href="/sign-up" className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-500 transition-colors">
+              <Link href="/start" className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-500 transition-colors">
                 Start free
               </Link>
             </>

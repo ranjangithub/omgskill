@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, ArrowLeft, CheckCircle2, Zap } from "lucide-react";
 import { INDUSTRIES, ROLES, CONTENT_GOALS } from "@/lib/personas/taxonomy";
@@ -16,6 +16,8 @@ export default function OnboardingPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [saving, setSaving] = useState(false);
+  const [autoSubmitting, setAutoSubmitting] = useState(false);
+  const [autoLabel, setAutoLabel] = useState("");
   const [profile, setProfile] = useState({
     industry: "",
     role: "",
@@ -25,6 +27,35 @@ export default function OnboardingPage() {
     inspirations: "",
     currentProjects: "",
   });
+
+  useEffect(() => {
+    const stored = localStorage.getItem("omgskill_preauth");
+    if (!stored) return;
+    let preauth: { industry?: string; role?: string; contentGoals?: string[] };
+    try { preauth = JSON.parse(stored); } catch { return; }
+    localStorage.removeItem("omgskill_preauth");
+
+    const ind = INDUSTRIES.find((i) => i.id === preauth.industry);
+    const rol = ROLES.find((r) => r.id === preauth.role);
+    if (ind && rol) setAutoLabel(`${ind.emoji} ${ind.label} × ${rol.emoji} ${rol.label}`);
+    setAutoSubmitting(true);
+
+    fetch("/api/onboarding", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        industry: preauth.industry ?? "technology-saas",
+        role: preauth.role ?? "technology",
+        contentGoals: preauth.contentGoals?.length ? preauth.contentGoals : ["stay-updated"],
+        voicePreference: "analytical",
+        linkedinUrl: null,
+        inspirations: null,
+        currentProjects: null,
+      }),
+    })
+      .then(() => router.push("/dashboard"))
+      .catch(() => setAutoSubmitting(false));
+  }, [router]);
 
   function toggleGoal(id: string) {
     setProfile((p) => {
@@ -47,6 +78,21 @@ export default function OnboardingPage() {
 
   const industryObj = INDUSTRIES.find((i) => i.id === profile.industry);
   const roleObj = ROLES.find((r) => r.id === profile.role);
+
+  if (autoSubmitting) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-slate-950 text-white px-6">
+        <div className="text-center max-w-sm">
+          <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-indigo-600 mx-auto animate-pulse">
+            <Zap className="h-10 w-10 text-white" />
+          </div>
+          <h1 className="text-2xl font-black mb-3">Personalizing your briefing...</h1>
+          {autoLabel && <p className="text-sm text-slate-400">{autoLabel}</p>}
+          <p className="mt-2 text-xs text-slate-600">Taking you to your dashboard in a moment.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-950 text-white">
