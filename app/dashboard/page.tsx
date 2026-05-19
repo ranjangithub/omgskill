@@ -14,7 +14,7 @@ export default async function DashboardPage() {
   const profile = getProfile(userId);
   const today = new Date().toISOString().split("T")[0];
   const personaKey = profile
-    ? buildPersonaKey(profile.role, profile.industry, profile.topics)
+    ? buildPersonaKey(profile.industry, profile.role, profile.contentGoals)
     : "default";
 
   const briefing = getBriefing(today, personaKey) ?? MOCK_BRIEFING;

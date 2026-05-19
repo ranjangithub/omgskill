@@ -13,7 +13,7 @@ export default async function ArchivePage() {
 
   const profile = getProfile(userId);
   const personaKey = profile
-    ? buildPersonaKey(profile.role, profile.industry, profile.topics)
+    ? buildPersonaKey(profile.industry, profile.role, profile.contentGoals)
     : "default";
 
   const dates = listBriefingDates(personaKey);

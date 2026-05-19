@@ -18,7 +18,7 @@ export default async function ArchiveDayPage({ params }: Props) {
   const tier = dbUser?.tier ?? "free";
   const profile = getProfile(userId);
   const personaKey = profile
-    ? buildPersonaKey(profile.role, profile.industry, profile.topics)
+    ? buildPersonaKey(profile.industry, profile.role, profile.contentGoals)
     : "default";
 
   const briefing = getBriefing(date, personaKey);

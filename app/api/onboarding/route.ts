@@ -9,11 +9,11 @@ export async function POST(req: Request) {
   const body = await req.json();
   upsertProfile({
     userId,
-    role: body.role ?? "Enterprise Architect",
-    industry: body.industry ?? "General Tech",
-    topics: body.topics ?? [],
-    linkedinUrl: body.linkedinUrl || null,
-    inspirations: body.inspirations || null,
+    industry:       body.industry       ?? "technology-saas",
+    role:           body.role           ?? "technology",
+    contentGoals:   body.contentGoals   ?? ["stay-updated"],
+    linkedinUrl:    body.linkedinUrl    || null,
+    inspirations:   body.inspirations   || null,
     currentProjects: body.currentProjects || null,
     voicePreference: body.voicePreference ?? "analytical",
   });

@@ -13,13 +13,17 @@ export interface UserRecord {
 
 export interface SubscriberProfile {
   userId: string;
-  role: string;         // "Enterprise Architect" | "AI Product Manager" | etc.
-  industry: string;     // "FinTech" | "Healthcare" | etc.
-  topics: string[];     // ["AI Governance", "RAG", "AI Security", ...]
+  // Level 1 — Industry
+  industry: string;        // INDUSTRIES[n].id e.g. "healthcare", "banking-finance"
+  // Level 2 — Role
+  role: string;            // ROLES[n].id e.g. "sales", "executive", "technology"
+  // Level 3 — Content Goals (ordered by priority, 1–3 selected)
+  contentGoals: string[];  // ["stay-updated", "create-content", ...]
+  // Premium personalization
   linkedinUrl: string | null;
-  linkedinSummary: string | null;  // scraped / pasted content
-  inspirations: string | null;     // "Karpathy, Ben Thompson, ..."
-  currentProjects: string | null;  // what they're building right now
+  linkedinSummary: string | null;
+  inspirations: string | null;
+  currentProjects: string | null;
   voicePreference: "analytical" | "conversational" | "executive";
   updatedAt: string;
 }
@@ -27,7 +31,7 @@ export interface SubscriberProfile {
 export interface BriefingRecord {
   id: string;
   date: string;           // YYYY-MM-DD
-  personaKey: string;     // hash of role+industry+topics for cache lookup
+  personaKey: string;     // cache key derived from industry+role+contentGoals
   signals: SignalRecord[];
   sections: BriefingSections;
   articlesFetched: number;
@@ -38,21 +42,33 @@ export interface SignalRecord {
   number: number;
   title: string;
   classification: "Strategic Signal" | "Emerging Trend" | "Tactical Update" | "Governance Alert" | "Hype/Noise";
+  // Core (all tiers)
   whatHappened: string;
   whyItMatters: string;
-  sdlcImpact: string;
-  governanceImpact: string;
-  architectureImpact: string;
+  // Pro+
+  industryImpact: string;
+  roleImpact: string;
   myTake: string;
-  linkedinAngle: string;
-  hook: string;
+  hook: string;            // LinkedIn hook (ready to paste)
+  // Per content goal (generated selectively)
+  contentAngle?: string;   // for "create-content" goal
+  salesIntel?: string;     // for "sell-better" goal
+  explainer?: string;      // for "learn-faster" goal
+  executiveBrief?: string; // for "lead-decide" goal
   driveTimeScript?: string;
 }
 
 export interface BriefingSections {
-  executiveSummary: string[];
-  quickHits: string;
-  research: string;
-  governance: string;
-  driveTime: string;
+  // "stay-updated" goal
+  summary: string[];       // 3–5 bullet executive summary
+  quickHits: string;       // short signals, no full analysis
+  // "create-content" goal
+  contentIdeas: string;    // post angles, newsletter ideas
+  driveTime: string;       // 5-min radio script
+  // "sell-better" goal
+  salesIntel: string;      // buyer signals, outreach angles
+  // "learn-faster" goal
+  explainers: string;      // concept breakdowns, frameworks
+  // "lead-decide" goal
+  strategyBrief: string;   // risk matrix, opportunity map
 }

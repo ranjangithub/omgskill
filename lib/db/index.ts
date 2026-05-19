@@ -1,9 +1,8 @@
 import type { UserRecord, SubscriberProfile, BriefingRecord, PricingTier } from "./schema";
 
 // In-memory store for local dev — swap for Supabase/PostgreSQL in production
-// Replace these Maps with Drizzle + postgres driver when deploying
 
-const users = new Map<string, UserRecord>();
+const users    = new Map<string, UserRecord>();
 const profiles = new Map<string, SubscriberProfile>();
 const briefings = new Map<string, BriefingRecord>(); // key: `${date}:${personaKey}`
 
@@ -30,7 +29,11 @@ export function getUser(userId: string): UserRecord | null {
   return users.get(userId) ?? null;
 }
 
-export function setUserTier(userId: string, tier: PricingTier, stripeData?: { customerId?: string; subscriptionId?: string }) {
+export function setUserTier(
+  userId: string,
+  tier: PricingTier,
+  stripeData?: { customerId?: string; subscriptionId?: string }
+) {
   const user = users.get(userId);
   if (!user) return;
   users.set(userId, {
@@ -47,14 +50,16 @@ export function markOnboarded(userId: string) {
   if (user) users.set(userId, { ...user, onboarded: true, updatedAt: new Date().toISOString() });
 }
 
-// ── Subscriber Profiles ─────────────────────────────────────────
+// ── Subscriber Profiles ──────────────────────────────────────────
 
-export function upsertProfile(data: Partial<SubscriberProfile> & { userId: string }): SubscriberProfile {
+export function upsertProfile(
+  data: Partial<SubscriberProfile> & { userId: string }
+): SubscriberProfile {
   const existing = profiles.get(data.userId);
   const record: SubscriberProfile = {
-    role: "Enterprise Architect",
-    industry: "General Tech",
-    topics: ["Generative AI"],
+    industry: "technology-saas",
+    role: "technology",
+    contentGoals: ["stay-updated"],
     linkedinUrl: null,
     linkedinSummary: null,
     inspirations: null,
@@ -72,7 +77,7 @@ export function getProfile(userId: string): SubscriberProfile | null {
   return profiles.get(userId) ?? null;
 }
 
-// ── Briefings ───────────────────────────────────────────────────
+// ── Briefings ────────────────────────────────────────────────────
 
 export function getBriefing(date: string, personaKey: string): BriefingRecord | null {
   return briefings.get(`${date}:${personaKey}`) ?? null;
@@ -90,9 +95,13 @@ export function listBriefingDates(personaKey: string): string[] {
     .reverse();
 }
 
-// ── Persona key ──────────────────────────────────────────────────
-
-export function buildPersonaKey(role: string, industry: string, topics: string[]): string {
-  const sorted = [...topics].sort().join(",");
-  return `${role}|${industry}|${sorted}`.toLowerCase().replace(/\s+/g, "_");
+// ── Persona key ───────────────────────────────────────────────────
+// Cache key: industry + role + sorted content goals
+export function buildPersonaKey(
+  industry: string,
+  role: string,
+  contentGoals: string[]
+): string {
+  const sortedGoals = [...contentGoals].sort().join(",");
+  return `${industry}|${role}|${sortedGoals}`.toLowerCase().replace(/\s+/g, "_");
 }

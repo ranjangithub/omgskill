@@ -100,8 +100,8 @@ export default async function SettingsPage() {
                 <p className="text-sm font-semibold text-slate-800 capitalize">{profile.voicePreference}</p>
               </div>
               <div>
-                <p className="text-xs text-slate-400">Topics</p>
-                <p className="text-sm font-semibold text-slate-800">{profile.topics.slice(0, 3).join(", ")}{profile.topics.length > 3 ? ` +${profile.topics.length - 3}` : ""}</p>
+                <p className="text-xs text-slate-400">Goals</p>
+                <p className="text-sm font-semibold text-slate-800 capitalize">{profile.contentGoals.join(", ").replace(/-/g, " ")}</p>
               </div>
             </div>
           </section>
