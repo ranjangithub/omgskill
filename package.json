@@ -7,10 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "generate": "tsx scripts/generate.ts",
-    "generate:healthcare": "tsx scripts/generate.ts healthcare",
-    "generate:tech": "tsx scripts/generate.ts technology-saas",
-    "generate:finance": "tsx scripts/generate.ts banking-finance"
+    "generate": "echo 'Run /generate inside a Claude Code session. See .claude/skills/generate/SKILL.md'"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.96.0",
