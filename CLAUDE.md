@@ -15,22 +15,24 @@ Visit: http://localhost:3004
 
 All content generation is done through Claude Code skills — no Anthropic API key needed.
 
-| Skill | What it does |
+| Command | What it does |
 |---|---|
-| `/generate` | Generate today's briefing for one or all industries |
-| `/show` | Display a saved briefing |
-| `/backfill` | Generate briefings for past dates |
-| `/persona` | Preview, compare, or add persona configurations |
-| `/sources` | Manage and test RSS feeds per industry |
-| `/audit` | Review a generated briefing for quality |
+| `/omgstack generate healthcare` | Generate today's briefing for an industry |
+| `/omgstack generate all` | Generate all 10 industries |
+| `/omgstack show healthcare` | Display a saved briefing |
+| `/omgstack show list` | List all saved briefings |
+| `/omgstack backfill 7 healthcare` | Generate last N days |
+| `/omgstack persona healthcare sales sell-better` | Preview a persona |
+| `/omgstack sources healthcare` | Test RSS feeds |
+| `/omgstack audit healthcare` | Score a briefing for quality |
 
 ## Skill routing
 
-- Generate content → `/generate [industry] [role]`
-- Read a briefing → `/show [industry] [date]`
-- Check quality → `/audit [industry]`
-- Manage feeds → `/sources [industry]`
-- Past dates → `/backfill [N days] [industry]`
+- Generate content → `/omgstack generate [industry] [role]`
+- Read a briefing → `/omgstack show [industry] [date]`
+- Check quality → `/omgstack audit [industry]`
+- Manage feeds → `/omgstack sources [industry]`
+- Past dates → `/omgstack backfill [N days] [industry]`
 
 ## File layout
 
