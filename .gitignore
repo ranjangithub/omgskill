@@ -49,3 +49,6 @@ next-env.d.ts
 
 # Generated briefing files
 data/briefings/
+
+# Local user/profile store (dev only — use a real DB in production)
+data/users/

@@ -267,10 +267,26 @@ export function listPersonaKeysForDate(date: string): string[] {
     const dir = path.join(STORE_DIR, date);
     if (!fs.existsSync(dir)) return [];
     return fs.readdirSync(dir)
-      .filter((f) => f.endsWith(".md"))
+      .filter((f) => f.endsWith(".md") && !f.startsWith("_"))
       .map((f) => f.replace(".md", "").replace(/_/g, "|"));
   } catch {
     return [];
+  }
+}
+
+/** Find any briefing from today for a given industry (fuzzy fallback). */
+export function findBriefingForIndustry(date: string, industryId: string): BriefingRecord | null {
+  try {
+    const dir = path.join(STORE_DIR, date);
+    if (!fs.existsSync(dir)) return null;
+    const files = fs.readdirSync(dir).filter(
+      (f) => f.endsWith(".md") && !f.startsWith("_") && f.startsWith(industryId)
+    );
+    if (files.length === 0) return null;
+    const raw = fs.readFileSync(path.join(dir, files[0]), "utf-8");
+    return parseBriefingMd(raw);
+  } catch {
+    return null;
   }
 }
 

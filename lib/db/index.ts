@@ -1,33 +1,18 @@
 import type { UserRecord, SubscriberProfile, BriefingRecord, PricingTier } from "./schema";
-import { readBriefing, writeBriefing, listBriefingDatesForPersona } from "@/lib/briefing-store";
+import { readBriefing, writeBriefing, listBriefingDatesForPersona, findBriefingForIndustry } from "@/lib/briefing-store";
+import {
+  fsGetUser, fsUpsertUser, fsSetUserTier, fsMarkOnboarded,
+  fsGetProfile, fsUpsertProfile,
+} from "./file-store";
 
-// In-memory store for users + profiles (swap for Supabase/PostgreSQL in production)
-// Briefings use file-based storage via lib/briefing-store.ts
-
-const users    = new Map<string, UserRecord>();
-const profiles = new Map<string, SubscriberProfile>();
-
-// ── Users ──────────────────────────────────────────────────────
+// ── Users (file-backed, survives dev server restarts) ────────────
 
 export function upsertUser(data: Partial<UserRecord> & { id: string; email: string }): UserRecord {
-  const existing = users.get(data.id);
-  const now = new Date().toISOString();
-  const record: UserRecord = {
-    tier: "free",
-    stripeCustomerId: null,
-    stripeSubscriptionId: null,
-    onboarded: false,
-    createdAt: existing?.createdAt ?? now,
-    updatedAt: now,
-    ...existing,
-    ...data,
-  };
-  users.set(data.id, record);
-  return record;
+  return fsUpsertUser(data);
 }
 
 export function getUser(userId: string): UserRecord | null {
-  return users.get(userId) ?? null;
+  return fsGetUser(userId);
 }
 
 export function setUserTier(
@@ -35,53 +20,34 @@ export function setUserTier(
   tier: PricingTier,
   stripeData?: { customerId?: string; subscriptionId?: string }
 ) {
-  const user = users.get(userId);
-  if (!user) return;
-  users.set(userId, {
-    ...user,
-    tier,
-    stripeCustomerId: stripeData?.customerId ?? user.stripeCustomerId,
-    stripeSubscriptionId: stripeData?.subscriptionId ?? user.stripeSubscriptionId,
-    updatedAt: new Date().toISOString(),
-  });
+  fsSetUserTier(userId, tier, stripeData);
 }
 
 export function markOnboarded(userId: string) {
-  const user = users.get(userId);
-  if (user) users.set(userId, { ...user, onboarded: true, updatedAt: new Date().toISOString() });
+  fsMarkOnboarded(userId);
 }
 
-// ── Subscriber Profiles ──────────────────────────────────────────
+// ── Subscriber Profiles (file-backed) ───────────────────────────
 
 export function upsertProfile(
   data: Partial<SubscriberProfile> & { userId: string }
 ): SubscriberProfile {
-  const existing = profiles.get(data.userId);
-  const record: SubscriberProfile = {
-    industry: "technology-saas",
-    role: "technology",
-    contentGoals: ["stay-updated"],
-    linkedinUrl: null,
-    linkedinSummary: null,
-    inspirations: null,
-    currentProjects: null,
-    voicePreference: "analytical",
-    updatedAt: new Date().toISOString(),
-    ...existing,
-    ...data,
-  };
-  profiles.set(data.userId, record);
-  return record;
+  return fsUpsertProfile(data);
 }
 
 export function getProfile(userId: string): SubscriberProfile | null {
-  return profiles.get(userId) ?? null;
+  return fsGetProfile(userId);
 }
 
 // ── Briefings (file-backed via lib/briefing-store.ts) ───────────
 
 export function getBriefing(date: string, personaKey: string): BriefingRecord | null {
-  return readBriefing(date, personaKey);
+  // Exact match first
+  const exact = readBriefing(date, personaKey);
+  if (exact) return exact;
+  // Fuzzy: any briefing from today for the same industry
+  const industry = personaKey.split("|")[0];
+  return findBriefingForIndustry(date, industry);
 }
 
 export function saveBriefing(briefing: BriefingRecord): void {

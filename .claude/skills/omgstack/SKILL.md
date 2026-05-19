@@ -36,6 +36,20 @@ No Anthropic API key needed — Claude Code does the generation.
 /omgstack audit                                 # audit today's tech/saas briefing
 /omgstack audit healthcare                      # audit today's healthcare briefing
 /omgstack audit all                             # audit all of today's briefings
+
+/omgstack resources                             # generate resources for technology-saas
+/omgstack resources healthcare                  # generate resources for healthcare
+/omgstack resources all                         # generate for all 10 industries
+
+/omgstack opportunities                         # scan today's opportunities for technology-saas
+/omgstack opportunities healthcare              # scan for healthcare
+/omgstack opportunities fixed                   # regenerate the evergreen fixed list only
+
+/omgstack social                                # generate social posts from today's tech/saas briefing
+/omgstack social healthcare executive           # social posts for healthcare × executive persona
+
+/omgstack resume                                # interactive resume analyzer (paste or path)
+/omgstack resume path/to/resume.txt             # analyze from file
 ```
 
 ---
@@ -52,6 +66,10 @@ Read the full argument string. The first word after `/omgstack` is the subcomman
 | `persona` | Step P: Persona |
 | `sources` | Step R: Sources |
 | `audit` | Step A: Audit |
+| `resources` | Step RES: Resources |
+| `opportunities` | Step OPP: Opportunities |
+| `social` | Step SOC: Social Posts |
+| `resume` | Step RUM: Resume Analyzer |
 
 Default industry (when none given): `technology-saas`
 Default role: use the table in Step G
@@ -546,3 +564,499 @@ Overall: N/15 — [Excellent / Good / Fix before using]
 
 If any flags found: "Want me to fix the flagged issues and rewrite the file?"
 If yes: rewrite only the flagged fields in-place. Do not regenerate the whole briefing.
+
+---
+
+## ═══ RESOURCES ══════════════════════════════════════════════════════════════
+## Step RES — Generate curated AI resources for an industry
+
+**Args:** `resources [industry]` or `resources all`
+
+The output is a markdown file the web app reads directly. This is the brain for the /dashboard/resources page.
+
+### RES1 — Resolve industry
+
+If no industry given: `technology-saas`. If `all`: loop all 10 industries.
+
+Read `content-engine/taxonomy.md` for the industry's context, key concerns, and AI pain points.
+
+### RES2 — Generate resources content
+
+For the given industry, generate a comprehensive, curated resource guide with REAL people and links. Apply deep knowledge of:
+- Who the actual influential practitioners and researchers are in AI × this industry
+- Which publications, blogs, and newsletters cover this intersection well
+- Which LinkedIn groups have active, signal-rich communities (not dead ones)
+- Which Twitter/X accounts post original analysis (not reshares)
+
+Include:
+- **AI impact overview**: 1 paragraph + 5–7 specific impact bullets with numbers where possible
+- **LinkedIn follows**: 4–5 practitioners with LinkedIn URLs and a specific reason why each is worth following
+- **Twitter/X follows**: 3–4 accounts with handles and why they're signal not noise
+- **Blogs & publications**: 4–5 sources with URLs, update cadence, and what makes each worth reading
+- **LinkedIn groups**: 3–4 active groups with estimated member counts and why each is useful
+
+Be specific. "Thought leader in AI" is not a reason. "Posts original research on clinical LLM deployment weekly, rarely reposts" is a reason.
+
+### RES3 — Write the file
+
+Path: `data/resources/{industryId}.md`
+
+```markdown
+---
+industryId: {INDUSTRY}
+generatedAt: TODAY
+---
+
+# {INDUSTRY_EMOJI} {INDUSTRY_LABEL} — AI Resources
+
+## AI & Your Industry
+
+{1-paragraph AI impact summary — specific, no hype}
+
+### What's actually changing
+
+- {specific change with numbers}
+- {specific change with numbers}
+- {specific change with numbers}
+- {specific change with numbers}
+- {specific change with numbers}
+
+---
+
+## Who to Follow on LinkedIn
+
+### {Person Name} | {Title}
+**Why follow:** {specific reason — what they post, how often, why it's signal}
+**LinkedIn:** {url}
+
+### {Person Name} | {Title}
+...
+
+---
+
+## Who to Follow on X (Twitter)
+
+### @{handle} — {Person Name}
+**Why follow:** {specific reason}
+**Twitter:** https://twitter.com/{handle}
+
+...
+
+---
+
+## Blogs & Publications
+
+### {Publication Name}
+**Cadence:** {Daily / Weekly / Irregular}
+**URL:** {url}
+**Why read:** {what makes this worth reading for this industry}
+
+...
+
+---
+
+## LinkedIn Groups to Join
+
+### {Group Name}
+**Members:** ~{N}
+**URL:** {url}
+**Why join:** {what kind of discussion happens, signal-to-noise ratio}
+
+...
+```
+
+### RES4 — Confirm
+
+```
+✅ omgstack resources — {INDUSTRY}
+   Saved    : data/resources/{industryId}.md
+   Sections : AI Impact, LinkedIn Follows, X/Twitter, Blogs, Groups
+   View     : http://localhost:3004/dashboard/resources
+```
+
+If `resources all`, loop RES1–RES4 for all 10 industries.
+
+---
+
+## ═══ OPPORTUNITIES ═══════════════════════════════════════════════════════════
+## Step OPP — Scan and write daily + evergreen opportunities
+
+**Args:** `opportunities [industry] [date]` or `opportunities fixed`
+
+The output is a markdown file the web app reads directly. This is the brain for the /dashboard/opportunities page.
+
+### OPP1 — Route
+
+- `opportunities fixed` → go to OPP-FIXED: generate/update evergreen list
+- `opportunities [industry]` → go to OPP-DAILY: scan today's opportunities
+
+### OPP-FIXED — Generate evergreen opportunities
+
+Generate a comprehensive, curated list of REAL recurring opportunities relevant to AI professionals across all industries. Include:
+
+- **10–15 hackathons**: Lablab.ai (weekly), DevPost AI, Google Cloud, AWS, Microsoft Imagine Cup, Hugging Face, and industry-specific ones
+- **10–15 conferences**: NeurIPS, ICLR, Google I/O, Microsoft Build, AWS re:Invent, Gartner IT Symposium, and industry-specific summits
+- **8–10 webinars & learning**: DeepLearning.AI short courses, MIT Sloan webinar series, Gartner webinars, Google AI learning path, Microsoft AI Skills Fest
+- **5–8 competitions**: Kaggle, DrivenData, AI for Good, AWS Startup Challenge
+- **5–8 communities**: LangChain office hours, Hugging Face events, MLOps Community, AI Engineer Summit, Responsible AI Institute
+
+Write each entry with: type, when, deadline (if applicable), URL, 2-sentence description, format (virtual/in-person/hybrid), cost (free/paid/varies), tags (list of industryIds or "all").
+
+Path: `data/opportunities/fixed.md`
+
+Format:
+```markdown
+---
+lastUpdated: TODAY
+---
+
+# Evergreen AI Opportunities
+
+## HACKATHONS
+
+### {Title}
+**Organizer:** {org}
+**Type:** hackathon
+**When:** {recurring pattern}
+**Deadline:** {if applicable}
+**Format:** virtual | in-person | hybrid
+**Cost:** free | paid | varies
+**Tags:** all | {industryId1, industryId2}
+**URL:** {url}
+**Description:** {2 sentences — what it is and why it matters}
+
+---
+
+## CONFERENCES
+
+### {Title}
+...
+
+---
+
+## WEBINARS & LEARNING
+
+...
+
+---
+
+## COMPETITIONS
+
+...
+
+---
+
+## COMMUNITY
+
+...
+```
+
+### OPP-DAILY — Scan today's opportunities for an industry
+
+**Args:** `opportunities [industry] [date?]`
+
+Scan for REAL, CURRENT opportunities announced recently or with registration open NOW:
+- Events in the next 60 days
+- Hackathons with open submission windows
+- Upcoming webinar registrations
+- New competition launches
+
+Include 6–8 entries. Only include events you are confident are real with working URLs.
+
+Path: `data/opportunities/{date}-{industryId}.md`
+
+Format:
+```markdown
+---
+date: {DATE}
+industryId: {INDUSTRY}
+generatedAt: {ISO timestamp}
+---
+
+# {INDUSTRY_EMOJI} {INDUSTRY_LABEL} — Opportunities for {DATE}
+
+## TODAY'S DISCOVERIES
+
+### {Title}
+**Organizer:** {org}
+**Type:** hackathon | conference | webinar | competition | community
+**When:** {specific date}
+**Deadline:** {if applicable}
+**Format:** virtual | in-person | hybrid
+**Cost:** free | paid | varies
+**URL:** {url}
+**Description:** {2 sentences specific to why this matters for {INDUSTRY} professionals}
+
+...
+```
+
+### OPP3 — Confirm
+
+```
+✅ omgstack opportunities — {INDUSTRY} — {DATE}
+   Saved    : data/opportunities/{date}-{industryId}.md
+   Found    : N opportunities
+   View     : http://localhost:3004/dashboard/opportunities
+```
+
+---
+
+## ═══ SOCIAL POSTS ════════════════════════════════════════════════════════════
+## Step SOC — Generate social media posts from today's briefing
+
+**Args:** `social [industry] [role] [goals...]`
+
+The output is a markdown file the web app reads directly. This is the brain for the 📱 Social tab in the dashboard.
+
+### SOC1 — Resolve persona and load briefing
+
+Default: technology-saas × executive × stay-updated,create-content.
+
+Build the persona key: `{industry}_{role}_{comma-sorted-goals}`.
+
+Find the briefing:
+```bash
+find data/briefings/$(date +%Y-%m-%d) -name "{industry}*.md" ! -name "_raw*" | head -1
+```
+
+If no briefing exists for today: "No briefing found for {industry} today. Run `/omgstack generate {industry}` first."
+
+Read the briefing file. Extract the top 3–5 signal titles and their `whatHappened` and `whyItMatters` fields from the YAML frontmatter.
+
+### SOC2 — Generate platform posts
+
+Using the signals as source material, write posts for each platform. Tailor voice, length, and format to the platform. The writer is a {ROLE} in the {INDUSTRY} industry sharing professional insights.
+
+**LinkedIn Post** (200–300 words):
+- Hook line that creates curiosity or stakes a position
+- 2–3 insights drawn from today's signals, specific to the industry
+- Concrete implication for practitioners
+- Question that invites comments
+- 3–5 hashtags at the end
+- No AI writing clichés ("fascinating", "excited to share", "diving deep")
+
+**Twitter/X Thread** (5 tweets):
+- Tweet 1: Hook (under 250 chars, makes people want to read on)
+- Tweets 2–4: One insight each, specific with data where possible
+- Tweet 5: Takeaway + 2–3 hashtags + thread marker (🧵)
+
+**LinkedIn Short Post** (60–80 words):
+- One punchy insight from today's signals
+- 1–2 sentences of "why this matters for you"
+- End with a question
+- Good for quick daily presence
+
+**Newsletter Teaser** (3–4 sentences):
+- Hooks the reader on what they'll learn
+- Specific: "Today I cover [X], [Y], and [Z]"
+- Ends with a reason to click through
+
+### SOC3 — Write the file
+
+Path: `data/social/{date}-{personaKey}.md`
+
+```markdown
+---
+date: {DATE}
+personaKey: {personaKey}
+industry: {INDUSTRY}
+role: {ROLE}
+generatedAt: {ISO timestamp}
+signalCount: N
+---
+
+# Social Posts — {INDUSTRY_EMOJI} {INDUSTRY_LABEL} — {DATE}
+
+## LinkedIn Post
+
+{full post content — ready to copy-paste}
+
+---
+
+## Twitter/X Thread
+
+Tweet 1/5: {content}
+
+Tweet 2/5: {content}
+
+Tweet 3/5: {content}
+
+Tweet 4/5: {content}
+
+Tweet 5/5: {content}
+
+---
+
+## LinkedIn Short Post
+
+{short post content}
+
+---
+
+## Newsletter Teaser
+
+{teaser content}
+```
+
+### SOC4 — Confirm
+
+```
+✅ omgstack social — {INDUSTRY} × {ROLE} — {DATE}
+   Signals used : N
+   Platforms    : LinkedIn Post, X Thread, LinkedIn Short, Newsletter Teaser
+   Saved        : data/social/{date}-{personaKey}.md
+   View         : http://localhost:3004/dashboard → 📱 Social tab
+```
+
+---
+
+## ═══ RESUME ANALYZER ══════════════════════════════════════════════════════════
+## Step RUM — Analyze resume and generate skill gap report
+
+**Args:** `resume` (interactive) or `resume path/to/resume.txt`
+
+The output is a markdown file the web app reads directly. This is the brain for the /dashboard/resume page.
+
+### RUM1 — Load resume text
+
+If a file path was given: read the file.
+
+If no path given: say "Paste your resume below, then type END on a new line:" and read until the user types `END` on its own line.
+
+If the resume is shorter than 100 words: "Resume too short — paste more content and try again."
+
+### RUM2 — Load user context
+
+Read `data/users/` directory to find the most recent profile, or check `content-engine/taxonomy.md` for industry/role context.
+
+If running interactively without a Clerk user profile, ask:
+- "What industry are you in?" (show the 10 options)
+- "What is your role?" (show the 10 options)
+
+### RUM3 — Analyze
+
+Apply deep analysis across these dimensions:
+
+**Current state reading:**
+- What AI tools, frameworks, and concepts does this person already know?
+- What is their tech-adjacent experience (data, automation, analytics)?
+- What level of AI fluency do they demonstrate implicitly?
+
+**Gap analysis (4–7 gaps, critical first):**
+For each gap, identify:
+- The specific skill name
+- Current level: none / beginner / intermediate
+- Target level: intermediate / advanced / expert
+- Importance: critical / high / medium
+- Why this gap specifically matters for their industry × role combination
+- The realistic time to close it
+
+**Learning plan (one entry per gap):**
+For each gap, provide 2–3 REAL, specific learning resources:
+- DeepLearning.AI courses for practical AI skills
+- Coursera/LinkedIn Learning for certifications
+- Specific books (O'Reilly, Manning) with ISBN where possible
+- Community/practice resources (Kaggle, GitHub projects to contribute to)
+- Include URL, provider, duration, and free/paid
+
+**AI Readiness Score:**
+Rate 1–10:
+- 1–3: No meaningful AI exposure, primarily traditional tools
+- 4–6: Some AI awareness, using AI tools but not building with them
+- 7–8: Integrating AI into workflows, some hands-on experience with models/APIs
+- 9–10: AI-native practitioner, building agents or production AI systems
+
+### RUM4 — Write the file
+
+Path: `data/resume/{userId}-analysis.md` (use `default` if no userId known)
+
+```markdown
+---
+analyzedAt: TODAY
+industry: {INDUSTRY}
+role: {ROLE}
+aiReadinessScore: {N}
+---
+
+# AI Readiness Analysis — {ROLE_LABEL} in {INDUSTRY_LABEL}
+
+## Your Top Priority
+
+{One sentence: the single most important thing to learn first and why}
+
+---
+
+## AI Readiness Score: {N}/10
+
+{2-sentence interpretation of the score — what it means for their career trajectory}
+
+---
+
+## Your Current AI Strengths
+
+- {strength 1 — specific to what was in the resume}
+- {strength 2}
+- {strength 3}
+- {strength 4}
+- {strength 5}
+
+---
+
+## Skill Gaps
+
+### 🔴 Critical: {Skill Name}
+**Current level:** {none / beginner / intermediate}
+**Target level:** {intermediate / advanced / expert}
+**Why this matters:** {1–2 sentences specific to their industry × role}
+
+### 🟠 High: {Skill Name}
+...
+
+### 🟡 Medium: {Skill Name}
+...
+
+---
+
+## Learning Plan
+
+### 1. {Skill Name} — {timeToClose}
+
+**{Resource Title}**
+- Provider: {provider}
+- Type: Course / Book / Certification / Practice / Community
+- Duration: {e.g. 6 hours, 4 weeks}
+- Cost: Free / Paid
+- URL: {url}
+
+**{Resource 2 Title}**
+...
+
+### 2. {Skill Name} — {timeToClose}
+...
+
+---
+
+## 90-Day Action Plan
+
+{3–5 concrete weekly milestones the person can commit to}
+
+Week 1–2: {specific action}
+Week 3–4: {specific action}
+Week 5–8: {specific action}
+Week 9–12: {specific action}
+```
+
+### RUM5 — Confirm and display summary
+
+```
+✅ omgstack resume — {INDUSTRY} × {ROLE}
+   AI Readiness  : {N}/10
+   Skill gaps    : {N} identified ({N} critical, {N} high, {N} medium)
+   Learning plan : {N} items, {total estimated time}
+   Saved         : data/resume/{filename}
+   View          : http://localhost:3004/dashboard/resume
+```
+
+Then display the **Top Priority**, **Score**, and **Strengths** so the user sees the key insights immediately.
+
+Ask: "Want me to display the full skill gaps, or the learning plan?"

@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getUser, getProfile, buildPersonaKey, getBriefing } from "@/lib/db";
 import { DashboardClient } from "@/components/dashboard-client";
 import { getMockBriefing } from "@/lib/mock-briefings";
+import { readSocialPosts } from "@/lib/md-reader";
 
 export default async function DashboardPage() {
   const { userId } = await auth();
@@ -19,6 +20,7 @@ export default async function DashboardPage() {
 
   const briefing = getBriefing(today, personaKey) ?? getMockBriefing(profile?.industry ?? "technology-saas");
   const tier = dbUser?.tier ?? "free";
+  const socialPostsRaw = readSocialPosts(today, personaKey);
 
   return (
     <DashboardClient
@@ -26,6 +28,7 @@ export default async function DashboardPage() {
       tier={tier}
       today={today}
       profile={profile}
+      socialPostsRaw={socialPostsRaw}
     />
   );
 }

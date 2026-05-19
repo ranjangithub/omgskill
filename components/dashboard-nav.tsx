@@ -1,12 +1,15 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Calendar, Settings, Zap } from "lucide-react";
+import { BookMarked, Calendar, FileSearch, Radar, Settings, Zap } from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
 
 const NAV_LINKS = [
   { href: "/dashboard", label: "Today", icon: Zap },
   { href: "/dashboard/archive", label: "Archive", icon: Calendar },
+  { href: "/dashboard/resources", label: "Resources", icon: BookMarked },
+  { href: "/dashboard/opportunities", label: "Opportunities", icon: Radar },
+  { href: "/dashboard/resume", label: "Resume", icon: FileSearch },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 
