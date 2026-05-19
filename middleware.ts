@@ -1,7 +1,9 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { ADMIN_COOKIE_NAME } from "@/lib/admin-auth";
+
+// Inlined to keep crypto (Node-only) out of the Edge Runtime bundle
+const ADMIN_COOKIE_NAME = "admin_sess";
 
 const isProtectedRoute = createRouteMatcher([
   "/dashboard(.*)",
