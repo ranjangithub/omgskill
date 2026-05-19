@@ -52,3 +52,6 @@ data/briefings/
 
 # Local user/profile store (dev only — use a real DB in production)
 data/users/
+
+# Admin config (contains real user IDs — configure via ADMIN_SUPERUSER_IDS env var)
+data/admin/

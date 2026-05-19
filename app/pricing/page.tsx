@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Check, Flame, X } from "lucide-react";
-import { MarketingNav } from "@/components/marketing-nav";
-import { Footer } from "@/components/footer";
 import { FREE_FEATURES, PRO_FEATURES, PREMIUM_FEATURES } from "@/lib/stripe/config";
 
 export const metadata: Metadata = { title: "Pricing" };
@@ -64,9 +62,7 @@ const COMPARE = [
 
 export default function PricingPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-slate-50">
-      <MarketingNav />
-
+    <>
       <section className="bg-gradient-to-b from-slate-950 to-slate-900 px-6 py-20 text-white text-center">
         <div className="mx-auto max-w-3xl">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-4 py-1.5 text-sm font-semibold text-indigo-300">
@@ -159,7 +155,6 @@ export default function PricingPage() {
         </div>
       </section>
 
-      <Footer />
-    </div>
+    </>
   );
 }

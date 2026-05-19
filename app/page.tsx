@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { ArrowRight, BrainCircuit, CheckCircle2, Clock, Flame, Globe, Shield, Sparkles, TrendingUp, Zap } from "lucide-react";
+import { auth } from "@clerk/nextjs/server";
 import { MarketingNav } from "@/components/marketing-nav";
+import { DashboardNav } from "@/components/dashboard-nav";
 import { Footer } from "@/components/footer";
 
 const SIGNALS_PREVIEW = [
@@ -32,10 +34,12 @@ const CLASSIFICATION_TYPES = [
   { label: "Hype/Noise", color: "bg-slate-100 text-slate-500", desc: "Filtered out — not shown" },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const { userId } = await auth();
+
   return (
     <div className="flex min-h-screen flex-col bg-slate-50 text-slate-900">
-      <MarketingNav />
+      {userId ? <DashboardNav /> : <MarketingNav />}
 
       {/* ── Hero ── */}
       <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 px-6 py-24 text-white">
@@ -208,7 +212,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <Footer />
+      {!userId && <Footer />}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookMarked, Calendar, FileSearch, Radar, Settings, Zap } from "lucide-react";
+import { BookMarked, Calendar, FileSearch, Radar, Settings, ShieldCheck, Zap } from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
 
 const NAV_LINKS = [
@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { href: "/dashboard/opportunities", label: "Opportunities", icon: Radar },
   { href: "/dashboard/resume", label: "Resume", icon: FileSearch },
   { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/dashboard/admin", label: "Admin", icon: ShieldCheck },
 ];
 
 export function DashboardNav() {
