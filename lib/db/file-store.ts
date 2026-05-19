@@ -6,7 +6,10 @@ import fs from "fs";
 import path from "path";
 import type { UserRecord, SubscriberProfile } from "./schema";
 
-const STORE_DIR = path.join(process.cwd(), "data", "users");
+// On Vercel, process.cwd() is read-only — use /tmp instead (ephemeral but writable)
+const STORE_DIR = process.env.VERCEL
+  ? path.join("/tmp", "omgskill-users")
+  : path.join(process.cwd(), "data", "users");
 
 function userFile(userId: string): string {
   return path.join(STORE_DIR, `${userId}.json`);
